@@ -1,8 +1,13 @@
 import React, {Component} from 'react'
-import {Link} from 'react-router-dom'
 import Book from './Book'
 
 class BookShelve extends Component {
+
+  sendSelfChange(book, shelf) {
+    this.props.updateBookShelf(book,shelf);
+  }
+
+
     render() {
         return (
             <div>
@@ -10,9 +15,11 @@ class BookShelve extends Component {
                   <h2 className="bookshelf-title">{this.props.title}</h2>
                   <div className="bookshelf-books">
                   <ol className="books-grid" >
-                      {this.props.books.filter((b) => b.shelf === this.props.shelf)
+                      {this.props.books
                       .map((b) => (
-                        <Book key = {b.id} book = {b} />
+                        <Book key={b.id} book={b}
+                        sendSelfChange={(book,shelf) => {this.sendSelfChange(book,shelf)}}
+                        />
                       ))
                       }
                   </ol>

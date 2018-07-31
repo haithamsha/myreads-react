@@ -12,18 +12,29 @@ class BooksApp extends React.Component {
     super(props);
     this.state = {
       books: [],
-      showSearchPage: false,
-      query : ""
+      showSearchPage: false
     }
   }
 
   componentDidMount() {
+    console.log(this.state.showSearchPage);
     BooksAPI.getAll().then((books) => {
       console.log(books);
       this.setState({
         books
       })
     });
+  }
+
+  handleUpdateBookShelf(book, shelf) {
+    BooksAPI.update(book,shelf)
+    .then(() => {
+      book.shelf = shelf;
+      // Update books array in the state.
+      this.setState(state => ({
+        books: state.books.filter((b) => b.id !== book.id).concat([book])
+      }))
+    })
   }
 
   render() {
@@ -37,16 +48,35 @@ class BooksApp extends React.Component {
 
         {this.state.showSearchPage ? (
           <Route path='/search' render = {() => (
-            <BookSearch  books = {this.state.books} onClick= {this.updateQuery}/>
+            <BookSearch  
+            userBooks = {this.state.books}
+            updateBookShelf = {(book, shelf) => this.handleUpdateBookShelf(book, shelf)}
+            showSearchPage = {this.state.showSearchPage}
+            />
           )}
             
           />
         ) : (
           <Route exact path='/' render ={() => (
             <div>
-              <BookShelve books ={this.state.books} shelf ="currentlyReading" title = "Currently reading"/>
-              <BookShelve books ={this.state.books} shelf ="wantToRead" title = "Want to read"/>
-              <BookShelve books ={this.state.books} shelf ="read" title = "Read"/>
+              <BookShelve
+              books ={this.state.books.filter(b => b.shelf === 'currentlyReading')} 
+              title = "Currently reading"
+              updateBookShelf = {(book, shelf) => this.handleUpdateBookShelf(book, shelf)}
+              />
+
+              <BookShelve 
+              books ={this.state.books.filter(b => b.shelf === 'wantToRead')}
+              title = "Want to read"
+              updateBookShelf = {(book, shelf) => this.handleUpdateBookShelf(book, shelf)}
+              />
+
+              <BookShelve 
+              books ={this.state.books.filter(b => b.shelf === 'read')}
+              title = "Read"
+              updateBookShelf = {(book, shelf) => this.handleUpdateBookShelf(book, shelf)}
+              />
+
             </div>
           )}
           />
