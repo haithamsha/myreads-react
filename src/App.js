@@ -1,7 +1,6 @@
 import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
-import escapeRegExp from 'escape-string-regexp'
 import {Route} from 'react-router-dom'
 import BookShelve from './BookShelve.js'
 import BookSearch from './BookSearch.js'
@@ -12,16 +11,16 @@ class BooksApp extends React.Component {
     super(props);
     this.state = {
       books: [],
-      showSearchPage: false
+      loading: true
     }
   }
 
   componentDidMount() {
-    console.log(this.state.showSearchPage);
     BooksAPI.getAll().then((books) => {
       console.log(books);
       this.setState({
-        books
+        books,
+        loading: false
       })
     });
   }
@@ -45,33 +44,32 @@ class BooksApp extends React.Component {
         <div className="list-books-title">
           <h1>MyReads</h1>
         </div>
-
-        {this.state.showSearchPage ? (
           <Route path='/search' render = {() => (
             <BookSearch  
             userBooks = {this.state.books}
             updateBookShelf = {(book, shelf) => this.handleUpdateBookShelf(book, shelf)}
-            showSearchPage = {this.state.showSearchPage}
             />
           )}
             
           />
-        ) : (
           <Route exact path='/' render ={() => (
             <div>
               <BookShelve
+              loading = {this.state.loading}
               books ={this.state.books.filter(b => b.shelf === 'currentlyReading')} 
               title = "Currently reading"
               updateBookShelf = {(book, shelf) => this.handleUpdateBookShelf(book, shelf)}
               />
 
               <BookShelve 
+              loading = {this.state.loading}
               books ={this.state.books.filter(b => b.shelf === 'wantToRead')}
               title = "Want to read"
               updateBookShelf = {(book, shelf) => this.handleUpdateBookShelf(book, shelf)}
               />
 
               <BookShelve 
+              loading = {this.state.loading}
               books ={this.state.books.filter(b => b.shelf === 'read')}
               title = "Read"
               updateBookShelf = {(book, shelf) => this.handleUpdateBookShelf(book, shelf)}
@@ -80,11 +78,10 @@ class BooksApp extends React.Component {
             </div>
           )}
           />
-        )}
         </div>
         </div>
         <div className="open-search">
-          <Link to='/search' onClick={() => this.setState({ showSearchPage: true })}>Add a book</Link>
+          <Link to='/search'>Add a book</Link>
         </div>
       </div>
     )

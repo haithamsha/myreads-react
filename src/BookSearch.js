@@ -18,10 +18,21 @@ class BookSearch extends Component {
     }
 
     SearchForBooks(query) {
-        this.setState({loading: true});
+        if(!query) {
+            this.setState({
+                books: [],
+                noBooks: '',
+                loading: false
+            })
+            return;
+        }
+        this.setState({
+            loading: true,
+            noBooks: ''
+        });
         BooksApi.search(query)
         .then(data => {
-            if(!!data.error) {
+            if(!data.length) {
                 this.setState({
                     books: [],
                     noBooks: 'Sorry, there no search result for your query',
@@ -52,12 +63,9 @@ class BookSearch extends Component {
     }
 
     render() {
-
-        const {books} = this.state;
-
         return (
             <div>
-                <div>{this.state.noBooks}</div>
+                <div className='no-books'>{this.state.noBooks}</div>
                 <div className="search-books">
                     <div className="search-books-bar">
                         <Link to='/' className="close-search" >Close</Link>
@@ -70,7 +78,7 @@ class BookSearch extends Component {
                         {!this.state.loading ? (
                             <ol className="books-grid" >
                             {
-                                books.map(book => (
+                                this.state.books.map(book => (
                                     <Book 
                                     key = {book.id}
                                     book = {book}
@@ -81,7 +89,7 @@ class BookSearch extends Component {
                         </ol>
                         ):
                         (
-                           <div>Loading...............</div> 
+                           <div className='loading'>Loading...............</div> 
                         )}
                     </div>
                 </div>

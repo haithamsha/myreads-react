@@ -11,6 +11,7 @@ class BookShelve extends Component {
     render() {
         return (
             <div>
+                {this.props.loading && (<div className='loading' >Loading...............</div>)}
                 <div className="bookshelf">
                   <h2 className="bookshelf-title">{this.props.title}</h2>
                   <div className="bookshelf-books">
