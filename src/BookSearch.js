@@ -8,7 +8,8 @@ class BookSearch extends Component {
         super(props);
         this.state = {
             books : [],
-            noBooks: ''
+            noBooks: '',
+            loading: false
         }
     }
 
@@ -17,17 +18,17 @@ class BookSearch extends Component {
     }
 
     SearchForBooks(query) {
-        console.log(query);
+        this.setState({loading: true});
         BooksApi.search(query)
         .then(data => {
             if(!!data.error) {
                 this.setState({
                     books: [],
-                    noBooks: 'Sorry, there no search result for your query'
+                    noBooks: 'Sorry, there no search result for your query',
+                    loading: false
                 })
             }
             else {
-
                 // compare user books with the search results.
                 var withUserBooks = data.map(b => {
                     for(var i = 0; i<this.props.userBooks.length;i++) {
@@ -43,7 +44,8 @@ class BookSearch extends Component {
                 // update the state with the final results.
                 this.setState({
                     books: withUserBooks,
-                    noBooks: ''
+                    noBooks: '',
+                    loading: false
                 })
             }
         })
@@ -65,7 +67,8 @@ class BookSearch extends Component {
                         </div>
                     </div>
                     <div className="search-books-results">
-                        <ol className="books-grid" >
+                        {!this.state.loading ? (
+                            <ol className="books-grid" >
                             {
                                 books.map(book => (
                                     <Book 
@@ -76,6 +79,10 @@ class BookSearch extends Component {
                                 ))
                             }
                         </ol>
+                        ):
+                        (
+                           <div>Loading...............</div> 
+                        )}
                     </div>
                 </div>
             </div>
