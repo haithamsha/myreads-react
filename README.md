@@ -1,5 +1,5 @@
 # MyReads Project
-
+This is project is a part of The Udacity Nanodegree shcolarship.
 My Reads app powerd by angular, you can arrange your book shelfs, search for books and add new books to your book shelfs.
 The project has back-end api's and front-end, the front-end part is an open source, you can contribute and send me a pull request to improve the front end part.
 

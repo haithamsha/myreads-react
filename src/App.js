@@ -17,7 +17,6 @@ class BooksApp extends React.Component {
 
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
-      console.log(books);
       this.setState({
         books,
         loading: false
@@ -26,12 +25,17 @@ class BooksApp extends React.Component {
   }
 
   handleUpdateBookShelf(book, shelf) {
+    this.setState({
+      loading: true
+    })
+
     BooksAPI.update(book,shelf)
     .then(() => {
       book.shelf = shelf;
       // Update books array in the state.
       this.setState(state => ({
-        books: state.books.filter((b) => b.id !== book.id).concat([book])
+        books: state.books.filter((b) => b.id !== book.id).concat([book]),
+        loading: false
       }))
     })
   }

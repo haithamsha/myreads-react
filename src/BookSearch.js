@@ -75,7 +75,7 @@ class BookSearch extends Component {
                         </div>
                     </div>
                     <div className="search-books-results">
-                        {!this.state.loading ? (
+                        {this.state.loading && (<div className='pupup'>Loading...............</div>)}
                             <ol className="books-grid" >
                             {
                                 this.state.books.map(book => (
@@ -87,10 +87,6 @@ class BookSearch extends Component {
                                 ))
                             }
                         </ol>
-                        ):
-                        (
-                           <div className='loading'>Loading...............</div> 
-                        )}
                     </div>
                 </div>
             </div>
