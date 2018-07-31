@@ -18,63 +18,12 @@ class BooksApp extends React.Component {
   }
 
   componentDidMount() {
-    if(!this.state.showSearchPage) {
-      BooksAPI.getAll().then((books) => {
-        console.log(books);
-        this.setState({
-          books
-        })
-      });
-    }
-    else {
-      this.setState({
-        showSearchPage : true
-      })
-    }
-  }
-
-  // componentWillUnmount() {
-  //   if(this.state.showSearchPage) { 
-  //     this.setState({
-  //       books: []
-  //     })
-  //   }
-  // }
-
-  updateQuery(query) {
-    if(!this.state.showSearchPage) {
-      BooksAPI.getAll().then((books) => {
-        console.log(books);
-        this.setState({
-          books
-        })
-      })
-    }
-
-    else {
-      this.setState({
-        query: query
-      });
-  
-      const match = new RegExp(escapeRegExp(query),'i');
-       
-      BooksAPI.search(query).then((books) => {
-        console.log("s", books);
-         if(books != undefined) {
-          this.setState({
-            books: books.filter((b) => match.test(b.title))
-          })
-         }
-      })
-    }
-  }
-
-  search() {
-    BooksAPI.search(this.state.query).then((books) => {
+    BooksAPI.getAll().then((books) => {
+      console.log(books);
       this.setState({
         books
       })
-    })
+    });
   }
 
   render() {
@@ -82,9 +31,9 @@ class BooksApp extends React.Component {
       <div className="app">
       <div className="list-books">
       <div className="list-books-content">
-          <div className="list-books-title">
-            <h1>MyReads</h1>
-          </div>
+        <div className="list-books-title">
+          <h1>MyReads</h1>
+        </div>
 
         {this.state.showSearchPage ? (
           <Route path='/search' render = {() => (
@@ -94,7 +43,11 @@ class BooksApp extends React.Component {
           />
         ) : (
           <Route exact path='/' render ={() => (
-            <BookShelve books ={this.state.books}/>
+            <div>
+              <BookShelve books ={this.state.books} shelf ="currentlyReading" title = "Currently reading"/>
+              <BookShelve books ={this.state.books} shelf ="wantToRead" title = "Want to read"/>
+              <BookShelve books ={this.state.books} shelf ="read" title = "Read"/>
+            </div>
           )}
           />
         )}
